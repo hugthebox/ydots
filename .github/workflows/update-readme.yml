@@ -1,4 +1,4 @@
-name: update readme
+name: update readme and upload to youtube
 
 on:
   push:
@@ -7,13 +7,31 @@ on:
       - "rices/**"
 
 jobs:
-  generate:
+  pipeline:
     runs-on: ubuntu-latest
     permissions:
       contents: write
 
     steps:
       - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: install deps
+        run: pip install google-auth-oauthlib google-api-python-client
+
+      - name: upload new rices to youtube
+        env:
+          YOUTUBE_CLIENT_ID: ${{ secrets.YOUTUBE_CLIENT_ID }}
+          YOUTUBE_CLIENT_SECRET: ${{ secrets.YOUTUBE_CLIENT_SECRET }}
+          YOUTUBE_REFRESH_TOKEN: ${{ secrets.YOUTUBE_REFRESH_TOKEN }}
+        run: |
+          for folder in rices/*/; do
+            folder=$(basename "$folder")
+            python scripts/upload_youtube.py "$folder"
+          done
 
       - name: generate readme
         run: python scripts/generate_readme.py
@@ -22,6 +40,6 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add README.md
-          git diff --cached --quiet || git commit -m "chore: update readme"
+          git add rices/*/info.md README.md
+          git diff --cached --quiet || git commit -m "chore: update readme and youtube links"
           git push

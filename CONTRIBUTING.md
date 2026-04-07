@@ -15,7 +15,7 @@ rices/your-username/
 
 1. Fork this repo
 2. Create `rices/your-username/` and add your three files
-3. Fill out `info.md` using the template in `rices/example/`
+3. Fill out `info.md` using the template below
 4. Open a pull request
 
 The README updates automatically once your PR is merged.
@@ -29,23 +29,21 @@ The README updates automatically once your PR is merged.
 
 > After your PR is merged, the video gets uploaded to the YouTube channel with full credit to you.
 
-## info.md fields
-
-```md 
+## info.md template
+```md
 ---
-author: your GitHub username or display name
-wm: window manager or desktop environment
-distro: linux/unix distributio 
-terminal: terminal emulator
-shell: shell
-dotfiles: link to your dotfiles repo
-video: leave empty — filled in after YouTube upload
+author: your-github-username
+wm: hyprland
+distro: arch
+terminal: kitty
+shell: zsh
+dotfiles: https://github.com/you/dotfiles
+video:
+description: Describe your setup in a few sentences. What's the vibe? Any custom configs worth mentioning?
 ---
 
 <video src="./preview.mp4" controls width="100%"></video>
-
 ```
-
 
 ## questions
 
