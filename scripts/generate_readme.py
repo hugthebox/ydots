@@ -20,9 +20,9 @@ def parse_frontmatter(content):
 
 def build_readme(rices):
     lines = [
-        "# linux rices",
+        "# linux/unix rices",
         "",
-        "A community collection of Linux desktop setups — curated and featured on [YouTube](https://www.youtube.com/@xpltt).",
+        "A community collection of linux/unix desktop setups - curated and featured on [YouTube](https://www.youtube.com/@xpltt).",
         "",
         "Want to be featured? Read [CONTRIBUTING.md](CONTRIBUTING.md) and open a pull request.",
         "",
@@ -33,7 +33,7 @@ def build_readme(rices):
     ]
 
     if not rices:
-        lines.append("*no submissions yet — be the first*")
+        lines.append("*no submissions yet - be the first*")
     else:
         lines.append("| preview | author | wm / de | distro | video | dotfiles |")
         lines.append("|---------|--------|---------|--------|-------|----------|")
@@ -41,18 +41,18 @@ def build_readme(rices):
         for rice in rices:
             folder   = rice["folder"]
             author   = rice.get("author", folder)
-            wm       = rice.get("wm", "—")
-            distro   = rice.get("distro", "—")
+            wm       = rice.get("wm", "-")
+            distro   = rice.get("distro", "-")
             video    = rice.get("video", "").strip()
             dotfiles = rice.get("dotfiles", "").strip()
 
             screenshot_path = f"rices/{folder}/screenshot.png"
             has_shot = os.path.exists(screenshot_path)
 
-            preview       = f'<img src="{screenshot_path}" width="220">' if has_shot else "—"
+            preview       = f'<img src="{screenshot_path}" width="220">' if has_shot else "-"
             author_cell   = f"[{author}](rices/{folder}/info.md)"
-            video_cell    = f"[watch]({video})" if video else "—"
-            dotfiles_cell = f"[link]({dotfiles})" if dotfiles else "—"
+            video_cell    = f"[watch]({video})" if video else "-"
+            dotfiles_cell = f"[link]({dotfiles})" if dotfiles else "-"
 
             lines.append(
                 f"| {preview} | {author_cell} | {wm} | {distro} | {video_cell} | {dotfiles_cell} |"
@@ -83,7 +83,7 @@ def main():
     with open(README_PATH, "w") as f:
         f.write(readme)
 
-    print(f"done — {len(rices)} rice(s) indexed")
+    print(f"done - {len(rices)} rice(s) indexed")
 
 
 if __name__ == "__main__":
