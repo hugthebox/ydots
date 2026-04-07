@@ -32,9 +32,9 @@ def parse_frontmatter(content):
 
 
 def build_title(data):
-    distro   = data.get("distro", "Linux").capitalize()
-    wm       = data.get("wm", "").capitalize()
-    author   = data.get("author", "unknown")
+    distro = data.get("distro", "linux").capitalize()
+    wm     = data.get("wm", "unknown").capitalize()
+    author = data.get("author", "unknown")
     return f"{distro} / {wm} / {author}"
 
 
@@ -47,9 +47,12 @@ def build_description(data):
     dotfiles    = data.get("dotfiles", "")
     description = data.get("description", "")
 
-    # tags
     tags_list = ["unixporn", "ricing", "linux", wm, distro, terminal, shell, author]
-    hashtags = " ".join(f"#{t.lower().replace(' ', '')}" for t in tags_list if t and t != "-")
+    hashtags  = " ".join(
+        f"#{t.lower().replace(' ', '')}"
+        for t in tags_list
+        if t and t != "-"
+    )
 
     parts = [
         f"{distro.capitalize()} / {wm.capitalize()} / {terminal} / {shell}",
@@ -72,7 +75,7 @@ def build_tags(data):
     terminal = data.get("terminal", "")
     shell    = data.get("shell", "")
     author   = data.get("author", "")
-    base = ["unixporn", "ricing", "linux", "rice", "desktop"]
+    base  = ["unixporn", "ricing", "linux", "rice", "desktop"]
     extra = [wm, distro, terminal, shell, author, f"{distro}linux", f"{wm}wm"]
     return base + [t for t in extra if t and t != "-"]
 
@@ -82,8 +85,12 @@ def upload(folder):
     video_path = f"rices/{folder}/preview.mp4"
     thumb_path = f"rices/{folder}/screenshot.png"
 
+    if not os.path.isfile(info_path):
+        print(f"skipping {folder}: no info.md")
+        return
+
     if not os.path.exists(video_path):
-        print(f"no video found for {folder}")
+        print(f"skipping {folder}: no preview.mp4")
         return
 
     with open(info_path) as f:
@@ -91,9 +98,8 @@ def upload(folder):
 
     data = parse_frontmatter(content)
 
-    # skip if already uploaded
     if data.get("video", "").strip():
-        print(f"already uploaded: {data['video']}")
+        print(f"skipping {folder}: already uploaded ({data['video']})")
         return
 
     title       = build_title(data)
@@ -121,22 +127,30 @@ def upload(folder):
     video_url = f"https://www.youtube.com/watch?v={video_id}"
     print(f"uploaded: {video_url}")
 
-    # set thumbnail
+    # set thumbnail — requires verified channel, skips gracefully if not
     if os.path.exists(thumb_path):
-        youtube.thumbnails().set(
-            videoId=video_id,
-            media_body=MediaFileUpload(thumb_path)
-        ).execute()
-        print("thumbnail set")
+        try:
+            youtube.thumbnails().set(
+                videoId=video_id,
+                media_body=MediaFileUpload(thumb_path)
+            ).execute()
+            print("thumbnail set")
+        except Exception as e:
+            print(f"thumbnail skipped (verify channel in YouTube Studio): {e}")
 
     # write url back to info.md
-    new_content = content.replace("video: \n", f"video: {video_url}\n", 1)
+    new_content = content.replace("video:\n", f"video: {video_url}\n", 1)
+    if new_content == content:
+        new_content = content.replace("video: \n", f"video: {video_url}\n", 1)
+
     with open(info_path, "w") as f:
         f.write(new_content)
 
-    print("info.md updated")
+    print(f"done: {folder}")
 
 
 if __name__ == "__main__":
-    folder = sys.argv[1]
-    upload(folder)
+    if len(sys.argv) < 2:
+        print("usage: upload_youtube.py <folder>")
+        sys.exit(1)
+    upload(sys.argv[1])
