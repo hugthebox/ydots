@@ -31,15 +31,21 @@ The README updates automatically once your PR is merged.
 
 ## info.md fields
 
-```yaml
-author:    your GitHub username or display name
-wm:        window manager or desktop environment
-distro:    Linux distribution
-terminal:  terminal emulator
-shell:     shell (bash, zsh, fish...)
-dotfiles:  link to your dotfiles repo
-video:     leave empty — filled in after YouTube upload
+```md 
+---
+author: your GitHub username or display name
+wm: window manager or desktop environment
+distro: linux/unix distributio 
+terminal: terminal emulator
+shell: shell
+dotfiles: link to your dotfiles repo
+video: leave empty — filled in after YouTube upload
+---
+
+<video src="./preview.mp4" controls width="100%"></video>
+
 ```
+
 
 ## questions
 
