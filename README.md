@@ -11,7 +11,7 @@ Want to be featured? Read [CONTRIBUTING.md](CONTRIBUTING.md) and open a pull req
 | preview | author | wm / de | distro | video | dotfiles |
 |---------|--------|---------|--------|-------|----------|
 | <img src="rices/hyprkai/screenshot.png" width="220"> | [Zorax-Dev](rices/hyprkai/info.md) | hyprland | arch | [watch](https://www.youtube.com/watch?v=hPwJi2WU9e4) | [link](https://github.com/Zorax-Dev/Hyprkai) |
-| <img src="rices/jahongir/screenshot.png" width="220"> | [jahamars](rices/jahongir/info.md) | sway | arch | - | [link](github.com/jahamars/wayland) |
+| <img src="rices/jahongir/screenshot.png" width="220"> | [jahamars](rices/jahongir/info.md) | sway | arch | [watch](https://www.youtube.com/watch?v=owQTZKb3508) | [link](github.com/jahamars/wayland) |
 
 ---
 
