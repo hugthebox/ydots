@@ -1,10 +1,13 @@
 import os
 import sys
 import re
+import mimetypes
 from google.oauth2.credentials import Credentials
 from google.auth.transport.requests import Request
 from googleapiclient.discovery import build
 from googleapiclient.http import MediaFileUpload
+
+BASE_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
 
 
 def get_youtube():
@@ -20,7 +23,7 @@ def get_youtube():
 
 
 def parse_frontmatter(content):
-    match = re.match(r"^---\n(.*?)\n---", content, re.DOTALL)
+    match = re.match(r"^---\r?\n(.*?)\r?\n---", content, re.DOTALL)
     if not match:
         return {}
     data = {}
@@ -81,9 +84,9 @@ def build_tags(data):
 
 
 def upload(folder):
-    info_path  = f"rices/{folder}/info.md"
-    video_path = f"rices/{folder}/preview.mp4"
-    thumb_path = f"rices/{folder}/screenshot.png"
+    info_path  = os.path.join(BASE_DIR, "rices", folder, "info.md")
+    video_path = os.path.join(BASE_DIR, "rices", folder, "preview.mp4")
+    thumb_path = os.path.join(BASE_DIR, "rices", folder, "screenshot.png")
 
     if not os.path.isfile(info_path):
         print(f"skipping {folder}: no info.md")
@@ -93,7 +96,7 @@ def upload(folder):
         print(f"skipping {folder}: no preview.mp4")
         return
 
-    with open(info_path) as f:
+    with open(info_path, encoding="utf-8") as f:
         content = f.read()
 
     data = parse_frontmatter(content)
@@ -127,23 +130,35 @@ def upload(folder):
     video_url = f"https://www.youtube.com/watch?v={video_id}"
     print(f"uploaded: {video_url}")
 
-    # set thumbnail — requires verified channel, skips gracefully if not
     if os.path.exists(thumb_path):
-        try:
-            youtube.thumbnails().set(
-                videoId=video_id,
-                media_body=MediaFileUpload(thumb_path)
-            ).execute()
-            print("thumbnail set")
-        except Exception as e:
-            print(f"thumbnail skipped (verify channel in YouTube Studio): {e}")
+        file_size_mb = os.path.getsize(thumb_path) / (1024 * 1024)
+        if file_size_mb > 2.0:
+            print(
+                f"thumbnail skipped: screenshot.png is {file_size_mb:.2f} MB "
+                f"(YouTube limit is 2 MB — compress it first)"
+            )
+        else:
+            try:
+                mime_type, _ = mimetypes.guess_type(thumb_path)
+                youtube.thumbnails().set(
+                    videoId=video_id,
+                    media_body=MediaFileUpload(
+                        thumb_path,
+                        mimetype=mime_type or "image/png"
+                    )
+                ).execute()
+                print("thumbnail set")
+            except Exception as e:
+                print(f"thumbnail skipped (verify channel in YouTube Studio): {e}")
 
-    # write url back to info.md
-    new_content = content.replace("video:\n", f"video: {video_url}\n", 1)
-    if new_content == content:
-        new_content = content.replace("video: \n", f"video: {video_url}\n", 1)
+    new_content = re.sub(
+        r"^video:.*$",
+        f"video: {video_url}",
+        content,
+        flags=re.MULTILINE,
+    )
 
-    with open(info_path, "w") as f:
+    with open(info_path, "w", encoding="utf-8") as f:
         f.write(new_content)
 
     print(f"done: {folder}")
@@ -154,5 +169,3 @@ if __name__ == "__main__":
         print("usage: upload_youtube.py <folder>")
         sys.exit(1)
     upload(sys.argv[1])
-
-

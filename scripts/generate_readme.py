@@ -1,12 +1,13 @@
 import os
 import re
 
-RICES_DIR = "rices"
-README_PATH = "README.md"
+BASE_DIR   = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
+RICES_DIR  = os.path.join(BASE_DIR, "rices")
+README_PATH = os.path.join(BASE_DIR, "README.md")
 
 
 def parse_frontmatter(content):
-    match = re.match(r"^---\n(.*?)\n---\n?", content, re.DOTALL)
+    match = re.match(r"^---\r?\n(.*?)\r?\n---", content, re.DOTALL)
     if not match:
         return {}, content
     data = {}
@@ -47,7 +48,7 @@ def build_readme(rices):
             dotfiles = rice.get("dotfiles", "").strip()
 
             screenshot_path = f"rices/{folder}/screenshot.png"
-            has_shot = os.path.exists(screenshot_path)
+            has_shot = os.path.exists(os.path.join(BASE_DIR, screenshot_path))
 
             preview       = f'<img src="{screenshot_path}" width="220">' if has_shot else "-"
             author_cell   = f"[{author}](rices/{folder}/info.md)"
@@ -66,21 +67,21 @@ def main():
     rices = []
 
     if not os.path.isdir(RICES_DIR):
-        print("rices/ directory not found")
+        print(f"rices/ directory not found (looked at: {RICES_DIR})")
         return
 
     for folder in sorted(os.listdir(RICES_DIR)):
         info_path = os.path.join(RICES_DIR, folder, "info.md")
         if not os.path.isfile(info_path):
             continue
-        with open(info_path) as f:
+        with open(info_path, encoding="utf-8") as f:
             content = f.read()
         data, _ = parse_frontmatter(content)
         data["folder"] = folder
         rices.append(data)
 
     readme = build_readme(rices)
-    with open(README_PATH, "w") as f:
+    with open(README_PATH, "w", encoding="utf-8") as f:
         f.write(readme)
 
     print(f"done - {len(rices)} rice(s) indexed")
