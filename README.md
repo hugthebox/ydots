@@ -17,6 +17,7 @@ Want to be featured? Read [CONTRIBUTING.md](CONTRIBUTING.md) and open a pull req
 | <img src="rices/end-4/screenshot.png" width="220"> | [end-4](rices/end-4/info.md) | hyprland | arch | [watch](https://www.youtube.com/watch?v=n3u0VdwsB4Q) | [link](github.com/jahamars/wayland) |
 | <img src="rices/hyprkai/screenshot.png" width="220"> | [Zorax-Dev](rices/hyprkai/info.md) | hyprland | arch | [watch](https://www.youtube.com/watch?v=hPwJi2WU9e4) | [link](https://github.com/Zorax-Dev/Hyprkai) |
 | <img src="rices/jahongir/screenshot.png" width="220"> | [jahamars](rices/jahongir/info.md) | sway | arch | [watch](https://www.youtube.com/watch?v=lcUVSfVEo6o) | [link](github.com/jahamars/wayland) |
+| <img src="rices/kando/screenshot.png" width="220"> | [kando](rices/kando/info.md) | hyprland | debian | [watch](https://www.youtube.com/watch?v=DqFiUhQi_B4) | [link](https://kando.menu/) |
 
 ---
 
