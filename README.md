@@ -18,6 +18,7 @@ Want to be featured? Read [CONTRIBUTING.md](CONTRIBUTING.md) and open a pull req
 | <img src="rices/hyprkai/screenshot.png" width="220"> | [Zorax-Dev](rices/hyprkai/info.md) | hyprland | arch | [watch](https://www.youtube.com/watch?v=hPwJi2WU9e4) | [link](https://github.com/Zorax-Dev/Hyprkai) |
 | <img src="rices/jahongir/screenshot.png" width="220"> | [jahamars](rices/jahongir/info.md) | sway | arch | [watch](https://www.youtube.com/watch?v=lcUVSfVEo6o) | [link](github.com/jahamars/wayland) |
 | <img src="rices/kando/screenshot.png" width="220"> | [kando](rices/kando/info.md) | hyprland | debian | [watch](https://www.youtube.com/watch?v=DqFiUhQi_B4) | [link](https://kando.menu/) |
+| <img src="rices/t4lentles5/screenshot.png" width="220"> | [t4lentles5](rices/t4lentles5/info.md) | hyprland | arch | [watch](https://www.youtube.com/watch?v=ubPxOnw6fFQ) | [link](https://github.com/t4lentles5/t4lentles5-dots) |
 | <img src="rices/w.nodots1/screenshot.png" width="220"> | [jahamars](rices/w.nodots1/info.md) | bspwm | artix | [watch](https://www.youtube.com/watch?v=NcRHjKHzNhw) | [link](no dots yet) |
 
 ---
