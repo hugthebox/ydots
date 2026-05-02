@@ -20,6 +20,7 @@ Want to be featured? Read [CONTRIBUTING.md](CONTRIBUTING.md) and open a pull req
 | <img src="rices/jahongir/screenshot.png" width="220"> | [jahamars](rices/jahongir/info.md) | sway | arch | [▶ watch](https://www.youtube.com/watch?v=lcUVSfVEo6o) | github.com/jahamars/wayland |
 | <img src="rices/kando/screenshot.png" width="220"> | [kando](rices/kando/info.md) | hyprland | debian | [▶ watch](https://www.youtube.com/watch?v=DqFiUhQi_B4) | [dotfiles](https://kando.menu/) |
 | <img src="rices/t4lentles5/screenshot.png" width="220"> | [t4lentles5](rices/t4lentles5/info.md) | hyprland | arch | [▶ watch](https://www.youtube.com/watch?v=ubPxOnw6fFQ) | [dotfiles](https://github.com/t4lentles5/t4lentles5-dots) |
+| <img src="rices/vyrx-dev/screenshot.png" width="220"> | [vyrx-dev](rices/vyrx-dev/info.md) | sway | cachyOS | - | [dotfiles](https://github.com/vyrx-dev/dotfiles) |
 | <img src="rices/w.nodots1/screenshot.png" width="220"> | [jahamars](rices/w.nodots1/info.md) | bspwm | artix | [▶ watch](https://www.youtube.com/watch?v=NcRHjKHzNhw) | no dots yet |
 
 ---
