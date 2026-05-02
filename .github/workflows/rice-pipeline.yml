@@ -1,0 +1,85 @@
+name: rice pipeline
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "rices/**"
+
+jobs:
+  readme:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: generate readme
+        run: python scripts/generate_readme.py
+
+      - name: commit readme
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add README.md
+          git diff --cached --quiet || git commit -m "chore: update readme [skip ci]"
+          git push
+
+  youtube:
+    needs: readme
+    if: vars.YOUTUBE_ENABLED == 'true'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: install deps
+        run: pip install google-auth google-auth-oauthlib google-api-python-client
+
+      - name: upload to youtube
+        env:
+          YOUTUBE_CLIENT_ID: ${{ secrets.YOUTUBE_CLIENT_ID }}
+          YOUTUBE_CLIENT_SECRET: ${{ secrets.YOUTUBE_CLIENT_SECRET }}
+          YOUTUBE_REFRESH_TOKEN: ${{ secrets.YOUTUBE_REFRESH_TOKEN }}
+        run: python scripts/upload_youtube.py --all
+
+      - name: commit video urls
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add rices/*/info.md
+          git diff --cached --quiet || git commit -m "chore: add youtube video urls [skip ci]"
+          git push
+
+  cleanup:
+    needs: youtube
+    if: always() && needs.youtube.result != 'failure'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+
+      - name: cleanup uploaded videos
+        run: bash scripts/cleanup_uploaded_videos.sh
+
+      - name: commit deletions
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add -A rices/
+          git diff --cached --quiet || git commit -m "chore: remove uploaded preview.mp4 files [skip ci]"
+          git push

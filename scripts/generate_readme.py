@@ -1,22 +1,21 @@
 import os
 import re
 
-BASE_DIR   = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
-RICES_DIR  = os.path.join(BASE_DIR, "rices")
+BASE_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
+RICES_DIR = os.path.join(BASE_DIR, "rices")
 README_PATH = os.path.join(BASE_DIR, "README.md")
 
 
 def parse_frontmatter(content):
     match = re.match(r"^---\r?\n(.*?)\r?\n---", content, re.DOTALL)
     if not match:
-        return {}, content
+        return {}
     data = {}
     for line in match.group(1).splitlines():
         if ":" in line:
             key, _, val = line.partition(":")
             data[key.strip()] = val.strip()
-    body = content[match.end():].strip()
-    return data, body
+    return data
 
 
 def build_readme(rices):
@@ -40,26 +39,36 @@ def build_readme(rices):
         lines.append("|---------|--------|---------|--------|-------|----------|")
 
         for rice in rices:
-            folder   = rice["folder"]
-            author   = rice.get("author", folder)
-            wm       = rice.get("wm", "-")
-            distro   = rice.get("distro", "-")
-            video    = rice.get("video", "").strip()
+            folder = rice["folder"]
+            author = rice.get("author", folder)
+            wm = rice.get("wm", "-")
+            distro = rice.get("distro", "-")
+            video = rice.get("video", "").strip()
             dotfiles = rice.get("dotfiles", "").strip()
 
             screenshot_path = f"rices/{folder}/screenshot.png"
             has_shot = os.path.exists(os.path.join(BASE_DIR, screenshot_path))
 
-            preview       = f'<img src="{screenshot_path}" width="220">' if has_shot else "-"
-            author_cell   = f"[{author}](rices/{folder}/info.md)"
-            video_cell    = f"[watch]({video})" if video else "-"
-            dotfiles_cell = f"[link]({dotfiles})" if dotfiles else "-"
+            preview = f'<img src="{screenshot_path}" width="220">' if has_shot else "-"
+            author_cell = f"[{author}](rices/{folder}/info.md)"
+
+            if re.match(r"https?://", video):
+                video_cell = f"[▶ watch]({video})"
+            else:
+                video_cell = "-"
+
+            if re.match(r"https?://", dotfiles):
+                dotfiles_cell = f"[dotfiles]({dotfiles})"
+            elif dotfiles:
+                dotfiles_cell = dotfiles
+            else:
+                dotfiles_cell = "-"
 
             lines.append(
                 f"| {preview} | {author_cell} | {wm} | {distro} | {video_cell} | {dotfiles_cell} |"
             )
 
-    lines += ["", "---", "", "*[↑ back to top](#linux-rices)*", ""]
+    lines += ["", "---", "", "*[↑ back to top](#linuxunix-rices)*", ""]
     return "\n".join(lines)
 
 
@@ -76,7 +85,7 @@ def main():
             continue
         with open(info_path, encoding="utf-8") as f:
             content = f.read()
-        data, _ = parse_frontmatter(content)
+        data = parse_frontmatter(content)
         data["folder"] = folder
         rices.append(data)
 
