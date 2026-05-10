@@ -1,6 +1,6 @@
 # linux/unix rices
 
-A community collection of linux/unix desktop setups - curated and featured on [YouTube](https://www.youtube.com/@xpltt).
+A community collection of linux/unix desktop setups - curated and featured on [YouTube](https://www.youtube.com/@unix.s).
 
 Want to be featured? Read [CONTRIBUTING.md](CONTRIBUTING.md) and open a pull request.
 
