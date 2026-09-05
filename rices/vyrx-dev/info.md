@@ -5,7 +5,7 @@ distro: cachyOS
 terminal: ghostty
 shell: fish
 dotfiles: https://github.com/vyrx-dev/dotfiles
-video:
+video: https://www.youtube.com/watch?v=okd3oa_VznY
 ---
 
 <video src="./preview.mp4" controls width="100%"></video>
