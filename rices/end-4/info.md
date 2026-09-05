@@ -4,7 +4,7 @@ wm: hyprland
 distro: arch
 terminal: kitty
 shell: zsh
-dotfiles: github.com/jahamars/wayland
+dotfiles: https://github.com/end-4/dots-hyprland
 video: https://www.youtube.com/watch?v=n3u0VdwsB4Q
 ---
 
