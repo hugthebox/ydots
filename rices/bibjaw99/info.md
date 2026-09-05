@@ -1,7 +1,7 @@
 ---
 author: bibjaw99
 wm: sway
-distro: sway
+distro: arch
 terminal: foot
 shell: bash
 dotfiles: https://codeberg.org/bibjaw99/grimmstation
