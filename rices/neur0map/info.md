@@ -9,5 +9,5 @@ video: https://www.youtube.com/watch?v=Yo0nCbux6QI
 description: Opinionated premium Arch workstation for powerful desktops and laptops
 ---
 
-<video src="./preview.mp4" controls width="100%"></video>
+[![preview](https://img.youtube.com/vi/Yo0nCbux6QI/maxresdefault.jpg)](https://www.youtube.com/watch?v=Yo0nCbux6QI)
 
