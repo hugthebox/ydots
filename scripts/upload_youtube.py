@@ -2,6 +2,7 @@ import os
 import sys
 import re
 import mimetypes
+from datetime import datetime
 from google.oauth2.credentials import Credentials
 from google.auth.transport.requests import Request
 from googleapiclient.discovery import build
@@ -9,12 +10,13 @@ from googleapiclient.http import MediaFileUpload
 
 BASE_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
 RICES_DIR = os.path.join(BASE_DIR, "rices")
+CURRENT_YEAR = datetime.now().year
 
 TITLE_TEMPLATES = [
-    "{wm} rice 2025 | {distro} linux | {author}",
+    "{wm} rice {year} | {distro} linux | {author}",
     "{distro} / {wm} desktop rice | {author}",
     "the most aesthetic {wm} setup | {distro} linux",
-    "{wm} + {distro} | linux rice 2025",
+    "{wm} + {distro} | linux rice {year}",
 ]
 
 
@@ -31,7 +33,7 @@ def get_youtube():
 
 
 def parse_frontmatter(content):
-    match = re.match(r"^---\r?\n(.*?)\r?\n---", content, re.DOTALL)
+    match = re.match(r"^---\r?\n(.*?)\r?\n---", content.lstrip(), re.DOTALL)
     if not match:
         return {}
     data = {}
@@ -42,23 +44,12 @@ def parse_frontmatter(content):
     return data
 
 
-def folder_index(folder):
-    folders = sorted(
-        d for d in os.listdir(RICES_DIR)
-        if os.path.isdir(os.path.join(RICES_DIR, d))
-    )
-    try:
-        return folders.index(folder)
-    except ValueError:
-        return 0
-
-
-def build_title(data, folder):
+def build_title(data, folder, all_folders):
     wm = data.get("wm", "unknown")
     distro = data.get("distro", "linux")
     author = data.get("author", "unknown")
-    idx = folder_index(folder) % len(TITLE_TEMPLATES)
-    return TITLE_TEMPLATES[idx].format(wm=wm, distro=distro, author=author)
+    idx = all_folders.index(folder) % len(TITLE_TEMPLATES) if folder in all_folders else 0
+    return TITLE_TEMPLATES[idx].format(wm=wm, distro=distro, author=author, year=CURRENT_YEAR)
 
 
 def build_description(data):
@@ -78,7 +69,7 @@ def build_description(data):
         f"#{distro_clean}linux",
         "#linuxrice",
         "#unixporn",
-        "#ricing2025",
+        f"#ricing{CURRENT_YEAR}",
         "#dotfiles",
         "#desktopsetup",
     ]
@@ -137,7 +128,7 @@ def build_tags(data):
     return result
 
 
-def upload(folder):
+def upload(folder, all_folders, youtube):
     info_path = os.path.join(RICES_DIR, folder, "info.md")
     video_path = os.path.join(RICES_DIR, folder, "preview.mp4")
     thumb_path = os.path.join(RICES_DIR, folder, "screenshot.png")
@@ -160,11 +151,9 @@ def upload(folder):
         print(f"skipping {folder}: already uploaded ({video_field})")
         return
 
-    title = build_title(data, folder)
+    title = build_title(data, folder, all_folders)
     description = build_description(data)
     tags = build_tags(data)
-
-    youtube = get_youtube()
 
     print(f"uploading: {title}")
     response = youtube.videos().insert(
@@ -209,6 +198,7 @@ def upload(folder):
         r"^video:.*$",
         f"video: {video_url}",
         content,
+        count=1,
         flags=re.MULTILINE,
     )
 
@@ -223,9 +213,23 @@ if __name__ == "__main__":
         print("usage: upload_youtube.py <folder> | --all")
         sys.exit(1)
 
-    if sys.argv[1] == "--all":
-        for name in sorted(os.listdir(RICES_DIR)):
-            if os.path.isdir(os.path.join(RICES_DIR, name)):
-                upload(name)
-    else:
-        upload(sys.argv[1])
+    youtube = get_youtube()
+
+    all_folders = sorted(
+        d for d in os.listdir(RICES_DIR)
+        if os.path.isdir(os.path.join(RICES_DIR, d))
+    )
+
+    targets = all_folders if sys.argv[1] == "--all" else [sys.argv[1]]
+
+    failed = []
+    for name in targets:
+        try:
+            upload(name, all_folders, youtube)
+        except Exception as e:
+            print(f"ERROR uploading {name}: {e}")
+            failed.append(name)
+
+    if failed:
+        print(f"\n{len(failed)} folder(s) failed: {', '.join(failed)}")
+        sys.exit(1)

@@ -4,6 +4,7 @@ REPO_ROOT="$(cd "$(dirname "$0")/.." && pwd)"
 RICES_DIR="$REPO_ROOT/rices"
 deleted=0
 skipped=0
+warnings=0
 
 echo "Scanning for uploaded preview.mp4 files..."
 echo ""
@@ -32,7 +33,16 @@ for folder in "$RICES_DIR"/*/; do
         if [ -n "$video_url" ]; then
             video_id=$(echo "$video_url" | grep -oP 'v=\K[^&]+' || true)
             if [ -n "$video_id" ]; then
+                before_hash=$(md5sum "$info" | cut -d' ' -f1)
                 sed -i "s|<video src=\"./preview.mp4\"[^>]*>.*</video>|[![preview](https://img.youtube.com/vi/${video_id}/maxresdefault.jpg)](${video_url})|g" "$info"
+                after_hash=$(md5sum "$info" | cut -d' ' -f1)
+                if [ "$before_hash" = "$after_hash" ]; then
+                    echo "  ⚠️  warning: video tag not found/replaced in $info — check the template manually"
+                    warnings=$((warnings + 1))
+                fi
+            else
+                echo "  ⚠️  warning: could not extract video id from $video_url"
+                warnings=$((warnings + 1))
             fi
         fi
 
@@ -47,6 +57,7 @@ echo ""
 echo "━━━ Summary ━━━"
 echo "  Deleted: $deleted video(s)"
 echo "  Skipped: $skipped video(s)"
+echo "  Warnings: $warnings"
 
 if [ "$deleted" -gt 0 ]; then
     echo ""

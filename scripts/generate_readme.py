@@ -5,9 +5,11 @@ BASE_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
 RICES_DIR = os.path.join(BASE_DIR, "rices")
 README_PATH = os.path.join(BASE_DIR, "README.md")
 
+YOUTUBE_CHANNEL_URL = "https://www.youtube.com/@unix.s"
+
 
 def parse_frontmatter(content):
-    match = re.match(r"^---\r?\n(.*?)\r?\n---", content, re.DOTALL)
+    match = re.match(r"^---\r?\n(.*?)\r?\n---", content.lstrip(), re.DOTALL)
     if not match:
         return {}
     data = {}
@@ -22,7 +24,7 @@ def build_readme(rices):
     lines = [
         "# linux/unix rices",
         "",
-        "A community collection of linux/unix desktop setups - curated and featured on [YouTube](https://www.youtube.com/@xpltt).",
+        f"A community collection of linux/unix desktop setups - curated and featured on [YouTube]({YOUTUBE_CHANNEL_URL}).",
         "",
         "Want to be featured? Read [CONTRIBUTING.md](CONTRIBUTING.md) and open a pull request.",
         "",

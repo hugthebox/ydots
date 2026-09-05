@@ -6,6 +6,10 @@ on:
     paths:
       - "rices/**"
 
+concurrency:
+  group: rice-pipeline
+  cancel-in-progress: false
+
 jobs:
   readme:
     runs-on: ubuntu-latest
@@ -64,7 +68,7 @@ jobs:
 
   cleanup:
     needs: youtube
-    if: always() && needs.youtube.result != 'failure'
+    if: needs.youtube.result == 'success'
     runs-on: ubuntu-latest
     permissions:
       contents: write
