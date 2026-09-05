@@ -8,6 +8,6 @@ dotfiles: https://github.com/t4lentles5/t4lentles5-dots
 video: https://www.youtube.com/watch?v=ubPxOnw6fFQ
 ---
 
-<video src="./preview.mp4" controls width="100%"></video>
+[![preview](https://img.youtube.com/vi/ubPxOnw6fFQ/maxresdefault.jpg)](https://www.youtube.com/watch?v=ubPxOnw6fFQ)
 
 
